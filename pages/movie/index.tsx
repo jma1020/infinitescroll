@@ -22,23 +22,31 @@ interface MovieData {
 
 const MoviePage: NextPage<Results> = ({results}) => {
   
-  const [page,setPage] = useState(1)
+  const [page,setPage] = useState<number>(1)
+  const [movieData,setMovieData] = useState<MovieData[]>(results)
 
-  // useEffect(()=>{
-    // async function resdata(){
-    //   const {data} = await axios(`${BASE_URL}/movie/popular?api_key=850fc882372c0b34a99f081e7c0c855f&page=2`)
-    //   console.log(data)
-    // }
-    // resdata()
-  // },[])
+  useEffect(()=>{
+    async function resdata(){
+      const {data} = await axios(`${BASE_URL}/movie/popular?api_key=850fc882372c0b34a99f081e7c0c855f&page=${page}`)
+      setMovieData(movieData.concat(data.results))
+    }
+    if(page>=2){
+      resdata()
+    }
+  },[page])
+
+  
   return(
-    <Container>
-      {results.map((item)=>{
-        return (
-          <Card key={item.id}  item={item} />
-        )
-      })}
-    </Container>
+    <div>
+      <Container>
+        {movieData.map((item)=>{
+          return (
+            <Card key={item.id}  item={item} />
+          )
+        })}
+      </Container>
+      <button onClick={()=> setPage(prev=>prev+1)}>페이지 상태 증가</button>
+    </div>
   )
 }
 
