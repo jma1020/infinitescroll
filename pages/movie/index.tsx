@@ -3,6 +3,8 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { BASE_URL, API_KEY, IMG_BASE_URL } from '../../shared/constant'
 import Image from 'next/image'
+import Card from '../../components/movie/Card'
+import styled from 'styled-components'
 
 interface Results{
   results: MovieData[]
@@ -30,10 +32,13 @@ const MoviePage: NextPage<Results> = ({results}) => {
     // resdata()
   // },[])
   return(
-    <div>
-      안녕하세요
-      {/* <Image src={`${IMG_BASE_URL}/w1280${results[0].poster_path}`} alt="포스터이미지" width={500} height={500}/> */}
-    </div>
+    <Container>
+      {results.map((item)=>{
+        return (
+          <Card key={item.id}  item={item} />
+        )
+      })}
+    </Container>
   )
 }
 
@@ -45,5 +50,11 @@ export async function getStaticProps(){
     props: data
   }
 }
+
+const Container = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
+`
 
 export default MoviePage
