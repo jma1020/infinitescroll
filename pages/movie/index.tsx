@@ -1,6 +1,6 @@
 import type { GetStaticProps, NextPage } from 'next'
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { BASE_URL, API_KEY, IMG_BASE_URL } from '../../shared/constant'
 import Image from 'next/image'
 import Card from '../../components/movie/Card'
@@ -24,18 +24,28 @@ const MoviePage: NextPage<Results> = ({results}) => {
   
   const [page,setPage] = useState<number>(1)
   const [movieData,setMovieData] = useState<MovieData[]>(results)
+  const bottom = useRef<HTMLDivElement>(null);
 
-  useEffect(()=>{
-    async function resdata(){
-      const {data} = await axios(`${BASE_URL}/movie/popular?api_key=850fc882372c0b34a99f081e7c0c855f&page=${page}`)
-      setMovieData(movieData.concat(data.results))
-    }
+  useEffect(()=>{  
     if(page>=2){
-      resdata()
+      (async function() {
+        const {data} = await axios(`${BASE_URL}/movie/popular?api_key=850fc882372c0b34a99f081e7c0c855f&page=${page}`)
+        setMovieData(movieData.concat(data.results))
+      })()
     }
   },[page])
 
-  
+  const observerCallback = (entries:any, observer:any) => {
+    entries.forEach((entry:any)=>{
+      if (entry.inIntersecting) {
+        console.log('이거 들어옴')
+      }
+    })
+  }
+
+  // const io = new IntersectionObserver(observerCallback,{threshold:0.5})
+  // io.observe(bottom.current) 
+
   return(
     <div>
       <Container>
@@ -46,6 +56,7 @@ const MoviePage: NextPage<Results> = ({results}) => {
         })}
       </Container>
       <button onClick={()=> setPage(prev=>prev+1)}>페이지 상태 증가</button>
+      <div ref={bottom}>더 불러오는 중~</div>
     </div>
   )
 }
