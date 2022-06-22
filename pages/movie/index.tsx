@@ -51,7 +51,7 @@ const MoviePage: NextPage<Results> = ({ results }) => {
     }
     // callback 함수, option
     const observer = new IntersectionObserver(observerCallback, {
-      threshold: 1
+      threshold: 0.9
     });
     observer.observe(bottom.current); // 타겟 엘리먼트 지정
     console.log(observer);
