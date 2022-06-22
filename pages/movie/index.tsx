@@ -36,6 +36,15 @@ const MoviePage: NextPage<Results> = ({ results }) => {
     }
   }, [page]);
 
+  const observerCallback: IntersectionObserverCallback = (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        console.log('이거 들어옴');
+        setPage((prev) => prev + 1);
+      }
+    });
+  };
+
   return (
     <div>
       <Container>
