@@ -45,6 +45,20 @@ const MoviePage: NextPage<Results> = ({ results }) => {
     });
   };
 
+  useEffect(() => {
+    let observer: IntersectionObserver;
+    if (bottom.current) {
+      // callback 함수, option
+      observer = new IntersectionObserver(observerCallback, {
+        threshold: 1
+      });
+      observer.observe(bottom.current); // 타겟 엘리먼트 지정
+      console.log(observer);
+    }
+
+    return () => observer && observer.disconnect();
+  }, []);
+
   return (
     <div>
       <Container>
